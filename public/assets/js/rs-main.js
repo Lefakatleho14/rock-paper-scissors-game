@@ -1,11 +1,11 @@
+/**
+ * The main script for the Rock Paper Scissors game.
+ * @author: Karim Aouaouda
+ * @author: Lefa
+ * @author: Tony 
+ */
+
 import { insensitiveCompare } from './helpers.js';
-
-// ==========================================
-// ROCK PAPER SCISSORS - MAIN SCRIPT
-// ==========================================
-
-// 1. TEAM INSTRUCTIONS (To be written by Tony)
-// Remember to explain how to open the console!
 
 // 2. COMPUTER LOGIC (To be written by Lefa)
 function computerPlay() {
