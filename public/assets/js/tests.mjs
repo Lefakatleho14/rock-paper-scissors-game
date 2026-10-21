@@ -3,7 +3,7 @@
  * @author: Karim Aouaouda
  */
 
-import { getRandomInt } from './helpers.js';
+import { getRandomInt, getRandomChoice, insensitiveCompare } from './helpers.js';
 
 function assert(name, condition, message) {
     if (!condition) {
@@ -20,13 +20,23 @@ function testGetRandomInt() {
     assert("testGetRandomInt", Number.isInteger(getRandomInt(1, 10)), "getRandomInt should return a valid integer and not floting point number");
 }
 
+function testGetRandomChoice() {
+    console.log("Testing getRandomChoice function...")
+    const choices = ["rock", "paper", "scissors"];
+    const randomChoice = getRandomChoice(choices);
+    assert("testGetRandomChoice", choices.includes(randomChoice), "getRandomChoice should return a valid choice");
+}
 
-
-
-
+function testInsensitiveCompare() {
+    console.log("Testing insensitiveCompare function...")
+    assert("testInsensitiveCompare", insensitiveCompare("Hello", "hello"), "insensitiveCompare should return true for case-insensitive comparison");
+    assert("testInsensitiveCompare", !insensitiveCompare("Hello", "world"), "insensitiveCompare should return false for different strings");
+}
 
 const tests = [
     testGetRandomInt,
+    testGetRandomChoice,
+    testInsensitiveCompare
 ]
 
 
@@ -45,7 +55,7 @@ for (const test of tests) {
 // show results summary in the console
 console.log("Test Results Summary:");
 console.log("------------------------failed results--------------------------");
-console.table(testResults.filter(result => result.status === "failed"));
+console.table(testResults.filter(result => result.status === "failed"), ["name", "status", "reason"]);
 
 console.log("------------------------successful results--------------------------");
 console.table(testResults.filter(result => result.status === "passed"));
