@@ -38,10 +38,14 @@ for (const test of tests) {
         testResults.push({ name: test.name, status: "passed" });
     } catch (error) {
         console.error("Test failed: " + test.name + " - " + error.message);
-        testResults.push({ name: test.name, status: "failed" });
+        testResults.push({ name: test.name, status: "failed", reason: error.message });
     }
 }
 
 // show results summary in the console
 console.log("Test Results Summary:");
-console.table(testResults);
+console.log("------------------------failed results--------------------------");
+console.table(testResults.filter(result => result.status === "failed"));
+
+console.log("------------------------successful results--------------------------");
+console.table(testResults.filter(result => result.status === "passed"));
