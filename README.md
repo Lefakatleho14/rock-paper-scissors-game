@@ -21,10 +21,12 @@ We designed our game to be robust. Here is how we handled unexpected user behavi
 To ensure our core logic is bulletproof, we included a custom testing suite (`tests.js`). 
 
 To run the tests:
-1. Open `script.js` and comment out the `game();` call at the bottom.
-2. Open `tests.js` and uncomment the `runTests();` call.
-3. Refresh the browser and open the Console (F12) to see the test results (Pass/Fail).
-
+1. ensure you are in the root of the project
+3. run the next command :
+```bash
+node .\public\assets\js\tests.js
+```
+3- results will be shown in your console
 **Tests Included:**
 *   Player Win conditions (Rock beats Scissors)
 *   Player Lose conditions (Scissors loses to Rock)
