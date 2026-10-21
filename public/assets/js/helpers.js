@@ -10,7 +10,7 @@
  * @param {*} max 
  * @returns {number} A random integer between min and max (inclusive).
  */
-export function getRandomInt(min, max)
+function getRandomInt(min, max)
 {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -22,7 +22,7 @@ export function getRandomInt(min, max)
  * @param {*} choices An array of possible choices.
  * @returns {string} A random choice from the array.
  */
-export function getRandomChoice(choices) {
+function getRandomChoice(choices) {
     const randomIndex = getRandomInt(0, choices.length - 1);
     return choices[randomIndex];
 }
@@ -35,7 +35,7 @@ export function getRandomChoice(choices) {
  * @param {*} maxLength The maximum length of the input.
  * @returns {string} The user's input.
  */
-export function promptString(message, minLength, maxLength) {
+function promptString(message, minLength, maxLength) {
     const input = prompt(message);
     if (input === null) {
         return null;
@@ -53,7 +53,7 @@ export function promptString(message, minLength, maxLength) {
  * @param {*} choices The list of possible choices.
  * @returns {string} The user's choice.
  */
-export function promptChoice(message, choices) {
+function promptChoice(message, choices) {
     const input = prompt(message);
     if (input === null) {
         return null;
@@ -74,6 +74,15 @@ export function promptChoice(message, choices) {
  * @param {*} str2 The second string to compare.
  * @returns {boolean} True if the strings are equal (case-insensitive), false otherwise.
  */
-export function insensitiveCompare(str1, str2) {
+function insensitiveCompare(str1, str2) {
     return str1.toLowerCase() === str2.toLowerCase();
+}
+
+
+export {
+    getRandomInt,
+    getRandomChoice,
+    promptString,
+    promptChoice,
+    insensitiveCompare
 }
