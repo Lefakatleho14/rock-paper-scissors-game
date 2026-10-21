@@ -1,3 +1,5 @@
+import { insensitiveCompare } from './helpers.js';
+
 // ==========================================
 // ROCK PAPER SCISSORS - MAIN SCRIPT
 // ==========================================
@@ -22,3 +24,10 @@ function game() {
 
 // START THE GAME
 // game(); 
+
+if(insensitiveCompare("Hello", "hello"))
+{
+    alert("The strings are equal (case-insensitive comparison).");
+}else{
+    alert("The strings are not equal.");
+}
