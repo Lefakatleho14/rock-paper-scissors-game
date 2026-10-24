@@ -107,12 +107,28 @@ function game() {
 
   // Announce Final Winner
   const finalMessage = `GAME OVER!\n\nThe winner is: ${gameState.winner}\nFinal Score -> You: ${gameState.score.player} | AI: ${gameState.score.computer}`;
-  alert(finalMessage);
   console.log(finalMessage);
 };
 
 
 // ==========================================
-// 6. START THE GAME
+// 6. START THE GAME (with replay)
 // ==========================================
-game();
+do {
+  // reset everything the last game changed
+  gameState.score.player = 0;
+  gameState.score.computer = 0;
+  gameState.winner = null;
+  gameState.isGameOver = false;
+
+  game();
+
+  if (!gameState.isGameOver) break; // player cancelled and confirmed the quit: no replay offer
+} while (confirm(
+  `GAME OVER! ${gameState.winner} wins.\n` +
+  `Final score -> You: ${gameState.score.player} | AI: ${gameState.score.computer}\n\n` +
+  `Do you want to play again?`
+));
+
+close(); // works only for a tab opened by script
+if (gameState.isGameOver) alert("Thanks for playing — you can close this tab."); // played out, not quit
