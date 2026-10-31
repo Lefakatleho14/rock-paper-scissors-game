@@ -1,24 +1,13 @@
-// ==========================================
-// 1. TEAM INSTRUCTIONS (UX)
-// ==========================================
 alert("Welcome to Rock, Paper, Scissors vs. the Evil AI!\n\nIMPORTANT: Press F12 (or Right-Click -> Inspect -> Console) to see the game logs and scoreboard.\n\nFirst to 3 points wins. Press 'Cancel' at any time to quit.");
 console.clear();
 
-// ==========================================
-// 2. COMPUTER LOGIC (Lefa)
-// ==========================================
+const CHOICES = ["rock", "paper", "scissors"];
+const WIN_SCORE = 3;
+
 function computerPlay() {
-  const randomNum = Math.floor(Math.random() * 3) + 1;
-  if (randomNum === 1) return "rock";
-  if (randomNum === 2) return "paper";
-  return "scissors";
+  return CHOICES[Math.floor(Math.random() * CHOICES.length)];
 }
 
-// ==========================================
-// 3. GAME STATE (Karim's Proxy Logic)
-// ==========================================
-// We removed the 'new Proxy' to keep it simple and compatible with a single file, 
-// but we kept the structure Karim built.
 const gameState = {
   isGameOver: false,
   winner: null,
@@ -33,102 +22,118 @@ const gameState = {
   }
 };
 
-// ==========================================
-// 4. ROUND LOGIC (Karim)
-// ==========================================
-function playRound(playerSelection, computerSelection) {
+function getRoundOutcome(playerSelection, computerSelection) {
   if (playerSelection === computerSelection) {
-    return 0; // Draw
+    return 0;
   }
 
-  // Check if player wins
   if (gameState.winConditions[playerSelection] === computerSelection) {
-    gameState.score.player++;
-    return 1; // Player wins
+    return 1;
   }
 
-  // If not draw and not win, computer wins
-  gameState.score.computer++;
-  return -1; // Computer wins
+  return -1;
 }
 
-// ==========================================
-// 5. GAME LOOP & HELPERS (Tony)
-// ==========================================
-function game() {
-  let playerOptions = ["rock", "paper", "scissors"]
-  let feedback = "Game Started!";
-  while (!gameState.isGameOver) {
-    let playerSelection = prompt(`${feedback}\n\nScore -> You: ${gameState.score.player} | AI: ${gameState.score.computer}\n\nType rock, paper, or scissors:`);
-    if (playerSelection === null) {
-      if (confirm("Are you sure you want to quit?")) {
-        alert("Goodbye!");
-        return;
-      }
-      else {
-        continue;
-      }
-    }
-    else {
-      playerSelection = playerSelection.trim().toLowerCase();
-
-      // Valid input: Play the round
-      if (playerOptions.includes(playerSelection)) {
-        let computerSelection = computerPlay()
-        let outcome = playRound(playerSelection, computerSelection);
-
-        // Update feedback based on outcome (1 = win, 0 = draw, -1 = lose)
-        if (outcome === 1) {
-          feedback = `You Win this round! ${playerSelection} beats ${computerSelection}.`;
-          console.log(feedback);
-        } else if (outcome === -1) {
-          feedback = `You Lose this round! ${computerSelection} beats ${playerSelection}.`;
-          console.log(feedback);
-        } else {
-          feedback = `It's a Draw! Both chose ${playerSelection}.`;
-          console.log(feedback);
-        }
-
-        // Check for game over (First to 3)
-        if (gameState.score.player >= 3) {
-          gameState.winner = "Player";
-          gameState.isGameOver = true;
-        } else if (gameState.score.computer >= 3) {
-          gameState.winner = "Computer (The Evil AI)";
-          gameState.isGameOver = true;
-        }
-      }
-      else {
-        alert("Invalid input! Please enter rock, paper, or scissors.");
-        continue;
-      }
-    }
+function updateScore(outcome) {
+  if (outcome === 1) {
+    gameState.score.player++;
   }
+  if (outcome === -1) {
+    gameState.score.computer++;
+  }
+}
 
-  // Announce Final Winner
-  const finalMessage = `GAME OVER!\n\nThe winner is: ${gameState.winner}\nFinal Score -> You: ${gameState.score.player} | AI: ${gameState.score.computer}`;
-  console.log(finalMessage);
-};
+function playRound(playerSelection, computerSelection) {
+  const outcome = getRoundOutcome(playerSelection, computerSelection);
+  updateScore(outcome);
+  return outcome;
+}
 
+function checkWinner() {
+  if (gameState.score.player >= WIN_SCORE) {
+    gameState.winner = "Player";
+    gameState.isGameOver = true;
+  } else if (gameState.score.computer >= WIN_SCORE) {
+    gameState.winner = "Computer (The Evil AI)";
+    gameState.isGameOver = true;
+  }
+}
 
-// ==========================================
-// 6. START THE GAME (with replay)
-// ==========================================
-do {
-  // reset everything the last game changed
+function resetGame() {
   gameState.score.player = 0;
   gameState.score.computer = 0;
   gameState.winner = null;
   gameState.isGameOver = false;
+}
+
+function promptChoice(message) {
+  let raw = prompt(message);
+  while (raw !== null) {
+    const choice = raw.trim().toLowerCase();
+    if (CHOICES.includes(choice)) {
+      return choice;
+    }
+    alert("Invalid input! Please enter rock, paper, or scissors.");
+    raw = prompt(message);
+  }
+  return null;
+}
+
+function confirmQuit() {
+  if (confirm("Are you sure you want to quit?")) {
+    alert("Goodbye!");
+    return true;
+  }
+  return false;
+}
+
+function roundMessage(outcome, playerSelection, computerSelection) {
+  if (outcome === 1) {
+    return `You Win this round! ${playerSelection} beats ${computerSelection}.`;
+  }
+  if (outcome === -1) {
+    return `You Lose this round! ${computerSelection} beats ${playerSelection}.`;
+  }
+  return `It's a Draw! Both chose ${playerSelection}.`;
+}
+
+function game() {
+  let feedback = "Game Started!";
+
+  while (!gameState.isGameOver) {
+    const playerSelection = promptChoice(`${feedback}\n\nScore -> You: ${gameState.score.player} | AI: ${gameState.score.computer}\n\nType rock, paper, or scissors:`);
+
+    if (playerSelection === null) {
+      if (confirmQuit()) {
+        return;
+      }
+      continue;
+    }
+
+    const computerSelection = computerPlay();
+    const outcome = playRound(playerSelection, computerSelection);
+
+    feedback = roundMessage(outcome, playerSelection, computerSelection);
+    console.log(feedback);
+
+    checkWinner();
+  }
+
+  const finalMessage = `GAME OVER!\n\nThe winner is: ${gameState.winner}\nFinal Score -> You: ${gameState.score.player} | AI: ${gameState.score.computer}`;
+  console.log(finalMessage);
+}
+
+do {
+  resetGame();
 
   game();
 
-  if (!gameState.isGameOver) break; // player cancelled and confirmed the quit: no replay offer
+  if (!gameState.isGameOver) break;
 } while (confirm(
   `GAME OVER! ${gameState.winner} wins.\n` +
   `Final score -> You: ${gameState.score.player} | AI: ${gameState.score.computer}\n\n` +
   `Do you want to play again?`
 ));
 
-close(); // works only for a tab opened by script
-if (gameState.isGameOver) alert("Thanks for playing — you can close this tab."); // played out, not quit
+close();
+if (gameState.isGameOver) alert("Thanks for playing — you can close this tab.");
